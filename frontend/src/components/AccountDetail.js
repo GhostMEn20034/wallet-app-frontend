@@ -8,11 +8,16 @@ import { useNavigate } from "react-router-dom";
 import BalanceChart from "./charts/BalanceTrend";
 import dayjs from "dayjs";
 import {fillMissingDate} from "../utils/FillMissingData";
+import EditAccount from "./EditAccount";
+import DeleteAccount from "./deleteAccount";
 
 
 export default function AccountDetail() {
     let [account, setAccount] = useState({});
     let [loading, setLoading] = useState(false);
+    let [openedEditWindow, setOpenedEditWindow] = useState(false);
+    let [openedDeleteWindow, setOpenedDeleteWindow] = useState(false);
+    let [filledBalanceTrend, setFilledBalanceTrend] = useState([]);
 
     let api = useAxios();
     const navigate = useNavigate();
@@ -25,16 +30,25 @@ export default function AccountDetail() {
         let response = await api.get(`/accounts/${accountId}`);
         let data = await response.data;
         setAccount(data);
+        setFilledBalanceTrend(fillEmptyData(data.current_period));
         setLoading(false);
-    }
+    };
 
-    let fillEmptyData = () => {
+    let handleClose = () => {
+      setOpenedEditWindow(!openedEditWindow);
+    };
+
+    let handleCloseDeleteWindow = () => {
+      setOpenedDeleteWindow(!openedDeleteWindow);
+    };
+
+    let fillEmptyData = (data) => {
       // Set the start date to the first day of the current month
       let start = dayjs().subtract(30, 'days');
       // Set the end date to the last day of the current month
       let end = dayjs();
 
-      let current_period = fillMissingDate(account.current_period, start, end);
+      let current_period = fillMissingDate(data, start, end);
       return current_period
     }
 
@@ -55,6 +69,8 @@ export default function AccountDetail() {
         }, []
       )
     
+    console.log(filledBalanceTrend)
+
     let handleBack = () => {
       navigate('/accounts')
     }  
@@ -68,9 +84,9 @@ export default function AccountDetail() {
     } else {
       return (
         <div>
-        
           <Stack sx={{padding: "1 rem"}}>
-            
+          { openedDeleteWindow && (<DeleteAccount opened={openedDeleteWindow} setOpened={handleCloseDeleteWindow} data={account}/>)}  
+          { openedEditWindow && (<EditAccount opened={openedEditWindow} setOpened={setOpenedEditWindow} data={account} onSubmit={getAccount}/>)}
             <Stack sx={{py: "0.75%", px: "1.5%", backgroundColor: "#f5fffe", boxShadow: 1}} direction="row" alignItems="center">
               <Button size="small"
               sx={{width: "3%",minWidth: "15px" ,backgroundColor: "white", ":hover": { bgcolor: "#edebec"}}}
@@ -78,8 +94,8 @@ export default function AccountDetail() {
               onClick={handleBack}
               ><ArrowBackIosNewIcon sx={{"color": "black"}}/></Button>
               <Typography variant="h5" sx={{"marginLeft": 2}}>Account details</Typography>
-              <Button size="small" variant="outlined" sx={{marginLeft: "auto"}}>Edit</Button>
-              <Button size="small" variant="outlined" sx={{marginLeft: "2%"}} color="error">Delete</Button>
+              <Button size="small" variant="outlined" sx={{marginLeft: "auto"}} onClick={handleClose}>Edit</Button>
+              <Button size="small" variant="outlined" sx={{marginLeft: "2%"}} onClick={handleCloseDeleteWindow} color="error">Delete</Button>
             </Stack>
             <Stack sx={{py: "1%", px: "2%", backgroundColor: "#f5fffe", boxShadow: 3, mt: "0.25%"}} direction="row">
               {account.color && (  
@@ -105,7 +121,7 @@ export default function AccountDetail() {
                 </Stack>
                 <Stack sx={{width: '100%', mt: "2%"}}>  
                 {account.current_period &&(
-                <BalanceChart data={fillEmptyData()}/>
+                <BalanceChart data={filledBalanceTrend}/>
                 )}
                 </Stack>
             </Stack>

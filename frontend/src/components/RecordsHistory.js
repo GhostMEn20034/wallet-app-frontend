@@ -170,6 +170,8 @@ export default function RecordHistory() {
   const deleteRecords = (ids) => {
 
     let accounts = data.accounts
+    let primary_currency = data.primary_currency
+    let total = data.total
     // Use the map method to create a new array of data with modified records
     if (sortOption.sortBy === 'date') {
       let newData = data.response.map(item => {
@@ -180,11 +182,11 @@ export default function RecordHistory() {
       });
       // Use the filter method to remove the items that have no records
       let filtered_data = newData.filter(item => item.records.length > 0);
-      return { response: filtered_data, accounts: accounts }
+      return { response: filtered_data, accounts: accounts, primary_currency: primary_currency,  total: total }
     } else {
       let newData = data.response.filter(record => !ids.includes(record._id));
       // Return a new object with the same date and the new records
-      return { response: newData, accounts: accounts };
+      return { response: newData, accounts: accounts, primary_currency: primary_currency,  total: total};
     }
 
   };
@@ -205,6 +207,8 @@ export default function RecordHistory() {
       console.log(error.response)
     }
   }
+
+  console.log(data.primary_currency)
 
   let handleClickOnFilter = () => {
     setOpenedFilter(!openedFilter)
@@ -313,9 +317,11 @@ export default function RecordHistory() {
               </Button>
             </Stack>
             <Stack>
+            {data.total &&(  
             <Typography variant="subtitle1" sx={{ marginLeft: "auto", mt: "3%"}}>
                 Total amount:&nbsp;<b>{data.total}&nbsp;{data.primary_currency}</b>
             </Typography>
+            )}
             </Stack>
             <Stack sx={{ mt: "2%" }}>
               {data.response && data.response.map((item, index) => (
