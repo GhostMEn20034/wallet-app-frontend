@@ -10,7 +10,7 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
-import { Box, Stack } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import { NumericFormat } from 'react-number-format';
 import { InputLabel, Select, MenuItem, Checkbox } from "@mui/material";
 import { useState, useEffect } from 'react';
@@ -182,98 +182,108 @@ export default function FormDialog({ opened, onClose, onSubmit, accounts, catego
           <Dialog open={open} onClose={handleClose}>
             <DialogTitle>Add record</DialogTitle>
             <DialogContent>
-              <FormControl sx={{ mt: "5%" }}>
-                <FormLabel id="demo-row-radio-buttons-group-label">Record type</FormLabel>
-                <RadioGroup
-                  row
-                  aria-labelledby="demo-row-radio-buttons-group-label"
-                  name="row-radio-buttons-group"
-                  value={recordType}
-                  onChange={(e) => setRecordType(e.target.value)}
-                >
-                  <FormControlLabel value="Expense" control={<Radio />} label="Expense" />
-                  <FormControlLabel value="Income" control={<Radio />} label="Income" />
-                  <FormControlLabel value="Transfer" control={<Radio />} label="Transfer" />
-                </RadioGroup>
-              </FormControl>
-              <FormControl fullWidth sx={{ mt: "4%" }}>
-                <InputLabel id="account-select-label">{recordType === 'Income' ? "To" : "From"}</InputLabel>
-                <Select
-                  name="from"
-                  value={from}
-                  onChange={handleFromField}
-                  labelId="account-select-label"
-                  id="account-select"
-                  label="Account"
-                  hidden
-                >
-                  {accounts.map((account) => (
-                    <MenuItem key={account.id} value={account.id}>
-                      {account.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              {recordType === 'Transfer' && ( // check if the record type is transfer
-                <Stack sx={{ width: "550px" }}>
-                  <FormControl fullWidth sx={{ mt: '4%' }}>
-                    <InputLabel id="account-select-label">To</InputLabel>
-                    <Select
-                      name="to"
-                      value={to}
-                      onChange={handleToField}
-                      labelId="account-select-label"
-                      id="account-select"
-                      label="Account"
-                      hidden
+              {accounts.length > 0 ? (
+                <div>
+                  <FormControl sx={{ mt: "5%" }}>
+                    <FormLabel id="demo-row-radio-buttons-group-label">Record type</FormLabel>
+                    <RadioGroup
+                      row
+                      aria-labelledby="demo-row-radio-buttons-group-label"
+                      name="row-radio-buttons-group"
+                      value={recordType}
+                      onChange={(e) => setRecordType(e.target.value)}
                     >
-                      {accounts
-                        .filter((account) => account.id !== from) // filter out the selected account from the first form
-                        .map((account) => (
+                      <FormControlLabel value="Expense" control={<Radio />} label="Expense" />
+                      <FormControlLabel value="Income" control={<Radio />} label="Income" />
+                      <FormControlLabel value="Transfer" control={<Radio />} label="Transfer" />
+                    </RadioGroup>
+                  </FormControl>
+                  {accounts.length < 2 && recordType === 'Transfer' ? (<Typography variant='h6'>To create records with type "Transfer" you must have at least 2 accounts. <a href='/accounts'>Create another one</a> </Typography>) : (
+                    <div>
+                    <FormControl fullWidth sx={{ mt: "4%", width: "550px" }}>
+                      <InputLabel id="account-select-label">{recordType === 'Income' ? "To" : "From"}</InputLabel>
+                      <Select
+                        name="from"
+                        value={from}
+                        onChange={handleFromField}
+                        labelId="account-select-label"
+                        id="account-select"
+                        label="Account"
+                        hidden
+                      >
+                        {accounts.map((account) => (
                           <MenuItem key={account.id} value={account.id}>
                             {account.name}
                           </MenuItem>
                         ))}
-                    </Select>
-                  </FormControl>
-                  <FormControlLabel control={<Checkbox checked={useOwnExchangeRate} onChange={() => setUseOwnExchangeRate(!useOwnExchangeRate)} />} label="Use own exchange rate" sx={{ padding: 0 }} />
-                  {useOwnExchangeRate && (
-                    <NumericFormat
-                    value={customExchangeRate}
-                    onChange={(e) => setCustomExchangeRate(e.target.value)}
+                      </Select>
+                    </FormControl>
+                  {recordType === 'Transfer' && ( // check if the record type is transfer
+                    <Stack sx={{ width: "550px" }}>
+                      <FormControl fullWidth sx={{ mt: '4%' }}>
+                        <InputLabel id="account-select-label">To</InputLabel>
+                        <Select
+                          name="to"
+                          value={to}
+                          onChange={handleToField}
+                          labelId="account-select-label"
+                          id="account-select"
+                          label="Account"
+                          hidden
+                        >
+                          {accounts
+                            .filter((account) => account.id !== from) // filter out the selected account from the first form
+                            .map((account) => (
+                              <MenuItem key={account.id} value={account.id}>
+                                {account.name}
+                              </MenuItem>
+                            ))}
+                        </Select>
+                      </FormControl>
+                      <FormControlLabel control={<Checkbox checked={useOwnExchangeRate} onChange={() => setUseOwnExchangeRate(!useOwnExchangeRate)} />} label="Use own exchange rate" sx={{ padding: 0 }} />
+                      {useOwnExchangeRate && (
+                        <NumericFormat
+                          value={customExchangeRate}
+                          onChange={(e) => setCustomExchangeRate(e.target.value)}
+                          decimalScale={2}
+                          decimalSeparator="."
+                          allowNegative={false}
+                          // Use customInput prop to pass TextField component
+                          customInput={TextField}
+                          // Pass any additional props to TextField component
+                          label="Exchange rate"
+                          name="exchange_rate"
+                          fullWidth
+                          variant="standard"
+                          sx={{ "mt": "1%" }}
+                        /> 
+                      )}
+                    </Stack>
+                  )}
+                  <NumericFormat
+                    value={amount}
+                    onChange={handleAmountChange}
                     decimalScale={2}
                     decimalSeparator="."
                     allowNegative={false}
                     // Use customInput prop to pass TextField component
                     customInput={TextField}
                     // Pass any additional props to TextField component
-                    label="Exchange rate"
-                    name="exchange_rate"
+                    label="Amount"
+                    name="amount"
                     fullWidth
                     variant="standard"
                     sx={{ "mt": "1%" }}
                   />
+                  <Box sx={{ display: recordType === "Transfer" ? "none" : "block" }}>
+                    <CategorySelect onChoose={handleCategoryChoose} onReset={() => setCategory("")} categories={categories} />
+                  </Box>
+                  </div> 
                   )}
-                </Stack>
+                </div>
+              ) : (
+                <Typography variant='h6'>To create records with type "Expense" or "Income" you must have at least one account. <a href='/accounts'>Create One</a></Typography>
               )}
-              <NumericFormat
-                value={amount}
-                onChange={handleAmountChange}
-                decimalScale={2}
-                decimalSeparator="."
-                allowNegative={false}
-                // Use customInput prop to pass TextField component
-                customInput={TextField}
-                // Pass any additional props to TextField component
-                label="Amount"
-                name="amount"
-                fullWidth
-                variant="standard"
-                sx={{ "mt": "1%" }}
-              />
-              <Box sx={{ display: recordType === "Transfer" ? "none" : "block" }}>
-                <CategorySelect onChoose={handleCategoryChoose} onReset={() => setCategory("")} categories={categories} />
-              </Box>
             </DialogContent>
             <DialogActions>
               <Button onClick={handleClose}>Cancel</Button>

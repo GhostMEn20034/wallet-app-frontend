@@ -317,11 +317,11 @@ export default function RecordHistory() {
               </Button>
             </Stack>
             <Stack>
-            {data.total &&(  
+            {data.total ? (  
             <Typography variant="subtitle1" sx={{ marginLeft: "auto", mt: "3%"}}>
                 Total amount:&nbsp;<b>{data.total}&nbsp;{data.primary_currency}</b>
             </Typography>
-            )}
+            ) : null}
             </Stack>
             <Stack sx={{ mt: "2%" }}>
               {data.response && data.response.map((item, index) => (

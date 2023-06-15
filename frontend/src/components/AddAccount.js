@@ -1,23 +1,15 @@
-import { useState, forwardRef } from "react";
-import useAxios from "../utils/useAxios";
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import { Slide, FormControl, Stack, MenuItem, Select, InputLabel } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
+import { useState, forwardRef, useEffect } from 'react';
+import { NumericFormat } from 'react-number-format';
 import CircleIcon from '@mui/icons-material/Circle';
-import {
-    Dialog,
-    Slide,
-    Button,
-    DialogTitle,
-    DialogContent,
-    DialogContentText,
-    DialogActions,
-    FormControl,
-    Select,
-    MenuItem,
-    InputLabel,
-    Stack,
-    TextField
-} from "@mui/material";
-import { LoadingButton } from "@mui/lab";
-import { NumericFormat } from "react-number-format";
+import useAxios from '../utils/useAxios';
 
 
 const colors = [
@@ -60,52 +52,62 @@ const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-
-export default function EditAccount({ opened, setOpened, data, onSubmit }) {
-    let [color, setColor] = useState(data.color);
-    let [name, setName] = useState(data.name);
-    let [balance, setBalance] = useState(data.balance);
-    let [currency, setCurrency] = useState(data.currency);
+export default function AddAccount({ open, setOpen, onSubmit }) {
+    let [color, setColor] = useState("#26c6da");
+    let [name, setName] = useState("");
+    let [balance, setBalance] = useState(null);
+    let [selectedCurrency, setSelectedCurrency] = useState("USD");
     let [loading, setLoading] = useState(false);
-
-    let api = useAxios();
+    let [currencies, setCurrencies] = useState([]);
 
     let handleColorChange = (e) => {
         setColor(e.target.value);
     }
 
+    let handleCurrencyChange = (e) => {
+        setSelectedCurrency(e.target.value)
+    }
+
+    let api = useAxios();
+
     const handleClose = () => {
-        setOpened();
+        setOpen(false);
     };
 
     let isFormValid = () => {
-        return color.trim() && name.trim() && balance;
+        return color.trim() && name.trim() && balance && selectedCurrency.trim();
     }
 
-    let handleSubmit = async () => {
-        setLoading(true);
-        let reqBody = { "name": name, "color": color, "balance": Number(balance) }
+    let getCurrencies = async () => {
+        let response = await api.get("/currencies/")
+        let data = await response.data
+        setCurrencies(data)
+    }
 
-        let response = await api.put(`accounts/${data._id}/update`, {...reqBody })
+    let createAccount = async () => {
+        setLoading(true);
+        let data = {"name": name, "balance": Number(balance), "currency": selectedCurrency, "color": color};
+
+        let response = await api.post('/accounts/create', {...data});
 
         let status = await response.status
 
-        if (status === 200) {
+        if (status === 201) {
             onSubmit();
-            handleClose();
         }
+        handleClose();
+        setLoading(false);
+
     }
+
+    useEffect(() => {
+        getCurrencies();
+    }, []);
 
     return (
         <div>
-            <Dialog
-                open={opened}
-                TransitionComponent={Transition}
-                keepMounted
-                onClose={handleClose}
-                aria-describedby="alert-dialog-slide-description"
-            >
-                <DialogTitle>{"Edit account"}</DialogTitle>
+            <Dialog open={open} onClose={handleClose} TransitionComponent={Transition}>
+                <DialogTitle>Add account</DialogTitle>
                 <Stack sx={{ "width": "550px", padding: 1 }}>
                     <DialogContent>
                         <Stack>
@@ -140,26 +142,25 @@ export default function EditAccount({ opened, setOpened, data, onSubmit }) {
                                     value={balance}
                                     onChange={(e) => setBalance(e.target.value)}
                                 />
-                                <Stack sx={{ width: "50%", marginLeft: "auto" }}>
-                                    <FormControl sx={{ width: "50%", mt: "6%", ml: "auto" }}>
+                            </Stack>
+                            <Stack sx={{ width: "50%", mt: "5%"}}>
+                                    <FormControl sx={{ width: "100%", mt: "6%", ml: "auto" }}>
                                         <InputLabel id="color-label">Currrency</InputLabel>
-                                        <Select value={currency} size="small" label="currency1" sx={{ height: "100%" }} disabled={true}>
-                                            <MenuItem value={currency} >
-                                                {currency}
-                                            </MenuItem>
+                                        <Select value={selectedCurrency} label="Currency" size="small" sx={{ height: "100%" }} onChange={handleCurrencyChange}>
+                                            {currencies.map((currency, index) => (
+                                                <MenuItem value={currency.code} key={index}>
+                                                    {`${currency.code} (${currency.name})`}
+                                                </MenuItem>
+                                            ))}
                                         </Select>
                                     </FormControl>
                                 </Stack>
-                            </Stack>
                         </Stack>
                     </DialogContent>
                 </Stack>
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
-                    <LoadingButton variant='outlined' sx={{ color: "green", width: "22%" }} 
-                    onClick={handleSubmit} loadingPosition="start" disabled={!isFormValid()} loading={loading}>
-                        <span>Submit</span>
-                    </LoadingButton>
+                    <LoadingButton disabled={!isFormValid()} loading={loading} onClick={createAccount} variant='outlined' sx={{ color: "green", width: "22%" }}>Submit</LoadingButton>
                 </DialogActions>
             </Dialog>
         </div>
