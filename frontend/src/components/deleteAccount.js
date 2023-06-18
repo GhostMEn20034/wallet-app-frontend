@@ -6,7 +6,6 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useNavigate } from "react-router-dom";
 import useAxios from '../utils/useAxios';
-import { useState } from 'react';
 
 export default function DeleteAccount({opened, setOpened, data}) {
 

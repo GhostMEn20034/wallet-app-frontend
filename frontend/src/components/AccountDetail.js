@@ -10,6 +10,7 @@ import dayjs from "dayjs";
 import {fillMissingDate} from "../utils/FillMissingData";
 import EditAccount from "./EditAccount";
 import DeleteAccount from "./deleteAccount";
+import DenseAppBar from "./AppBar";
 
 
 export default function AccountDetail() {
@@ -84,7 +85,8 @@ export default function AccountDetail() {
     } else {
       return (
         <div>
-          <Stack sx={{padding: "1 rem"}}>
+          <DenseAppBar />
+          <Stack sx={{padding: "1 rem", mt: "75px"}}>
           { openedDeleteWindow && (<DeleteAccount opened={openedDeleteWindow} setOpened={handleCloseDeleteWindow} data={account}/>)}  
           { openedEditWindow && (<EditAccount opened={openedEditWindow} setOpened={setOpenedEditWindow} data={account} onSubmit={getAccount}/>)}
             <Stack sx={{py: "0.75%", px: "1.5%", backgroundColor: "#f5fffe", boxShadow: 1}} direction="row" alignItems="center">

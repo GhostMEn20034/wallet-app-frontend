@@ -16,12 +16,13 @@ import { styled } from '@mui/material/styles';
 import useAxios from '../utils/useAxios';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import AddAccount from "./AddAccount";
+import DenseAppBar from "./AppBar";
 
 
 export default function AcccountList() {
   let [accounts, setAccounts] = useState([]);
   let [sortOption, setSortOption] = useState({ sortBy: "name", order: "asc" });
-  let [openedAddRecordWindow, setOpenedAddRecordWindow] = useState(false);
+  let [openedAddAccountWindow, setOpenedAddAccountWindow] = useState(false);
 
   let api = useAxios();
   const navigate = useNavigate();
@@ -88,14 +89,15 @@ export default function AcccountList() {
 
   return (
     <div>
-      {openedAddRecordWindow && (<AddAccount open={openedAddRecordWindow} setOpen={setOpenedAddRecordWindow} onSubmit={getAccounts}/>)}
-      <Box display="flex">
+      <DenseAppBar location={"Accounts"}/>
+      {openedAddAccountWindow && (<AddAccount open={openedAddAccountWindow} setOpen={setOpenedAddAccountWindow} onSubmit={getAccounts}/>)}
+      <Box display="flex" sx={{}}>
         <Box sx={{ bgcolor: "#f5fffe", width: "23%", height: "10%", paddingBottom: "2%", mt: "8.5%", ml: "1%", "borderRadius": "15px", boxShadow: 3 }}
         >
           <Box spacing={0}>
             <Typography variant='h5' sx={{ mt: "5%", ml: "5%" }}>Accounts</Typography>
             <Button variant='contained' size='small'
-              onClick={() => setOpenedAddRecordWindow(!openedAddRecordWindow)}
+              onClick={() => setOpenedAddAccountWindow(!openedAddAccountWindow)}
               sx={{ width: "65%", left: "20%", mt: "10%", mr: "5%", backgroundColor: "#30b864", ":hover": { bgcolor: "#289953", color: "white" } }}>
               <AddCircleOutlineIcon /> &nbsp;Add Account
             </Button>

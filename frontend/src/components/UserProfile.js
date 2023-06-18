@@ -3,9 +3,6 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import { Stack, TextField, Alert } from '@mui/material';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import AppBar from '@mui/material/AppBar';
 import BasicDatePicker from './DatePicker';
 import Button from '@mui/material/Button';
 import FormControl from '@mui/material/FormControl';
@@ -16,24 +13,7 @@ import AuthContext from '../context/AuthContext';
 import dayjs from 'dayjs';
 import useAxios from '../utils/useAxios';
 import DeleteProfile from './DeleteProfile';
-
-
-
-
-function DenseAppBar() {
-  return (
-    <Box sx={{ flexGrow: 1, }}>
-      <AppBar position="static" sx={{ "background": "#5E35B1" }}>
-        <Toolbar variant="dense" >
-          <Typography variant="h6" color="inherit" component="div">
-            Personal info
-          </Typography>
-        </Toolbar>
-      </AppBar>
-    </Box>
-  );
-}
-
+import DenseAppBar from './AppBar';
 
 export default function UserProfile() {
   let [firstName, setFirstName] = React.useState("");
@@ -138,11 +118,11 @@ export default function UserProfile() {
 
   return (
     <React.Fragment>
-      <DenseAppBar />
+      <DenseAppBar location={"Profile"} />
       <CssBaseline />
       <Container sx={{ width: '75%' }}>
         {openDeleteProfile && (<DeleteProfile opened={openDeleteProfile} setOpened={setOpenDeleteProfile} onSubmit={deleteProfile} />)}
-        <Box sx={{ height: '50vh', 'mt': '2%', padding: 1 }} component='form' onSubmit={updateUserInfo}>
+        <Box sx={{ height: '50vh', 'mt': '75px', padding: 1 }} component='form' onSubmit={updateUserInfo}>
           {updated && (<Alert severity="success" onClose={() => setUpdated(false)}>User info has been updated successfully!</Alert>)}
           <Box>
             <TextField id="standard-basic" label="First name" variant="standard" name='first_name' value={firstName}

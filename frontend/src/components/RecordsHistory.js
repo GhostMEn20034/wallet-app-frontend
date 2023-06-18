@@ -18,6 +18,7 @@ import ParamValueFilter from './ParamValueFilter';
 import AmountRange from './AmountRange';
 import DateRangePicker from './DateFilter';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import DenseAppBar from './AppBar';
 
 function RecordAmount({ recordType, amount, currency }) {
   const recordStyles = {
@@ -246,7 +247,8 @@ export default function RecordHistory() {
 
   return (
     <div>
-      <Box display="flex">
+      <DenseAppBar location={"Records"}/>
+      <Box display="flex" sx={{mt: "75px"}}>
         {opened && <FormDialog opened={opened} onClose={handleClose} onSubmit={getRecords} categories={categories} accounts={data.accounts} />}
         <Box sx={{ bgcolor: "#f5fffe", width: "23%", height: "10%", paddingBottom: "2%", mt: "8.5%", ml: "1%", "borderRadius": "15px", boxShadow: 3 }}
         >
@@ -307,11 +309,11 @@ export default function RecordHistory() {
 
           <Stack sx={{ mr: "1.5%" }}>
             <Stack direction="row">
-              <Stack sx={{ width: "20%", ml: "35%" }}>
+              <Stack sx={{ width: "20%", ml: "30%" }}>
                 <DateRangePicker setFilters={setFilters} />
               </Stack>
               <Button variant='contained' size='small' onClick={() => deleteSelected()}
-                sx={{ backgroundColor: "red", width: "20%", ":hover": { bgcolor: "#db0804", color: "white" }, ml: "25%" }}
+                sx={{ backgroundColor: "red", width: "20%", ":hover": { bgcolor: "#db0804", color: "white" }, ml: "30%" }}
                 disabled={!isSelected()}>
                 <DeleteIcon /> &nbsp;Delete record(s)
               </Button>

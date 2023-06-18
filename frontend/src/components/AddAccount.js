@@ -4,7 +4,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import { Slide, FormControl, Stack, MenuItem, Select, InputLabel } from '@mui/material';
+import { Slide, FormControl, Stack, MenuItem, Select, InputLabel, Alert } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { useState, forwardRef, useEffect } from 'react';
 import { NumericFormat } from 'react-number-format';
@@ -59,6 +59,8 @@ export default function AddAccount({ open, setOpen, onSubmit }) {
     let [selectedCurrency, setSelectedCurrency] = useState("USD");
     let [loading, setLoading] = useState(false);
     let [currencies, setCurrencies] = useState([]);
+    let [error, setError] = useState(null);
+
 
     let handleColorChange = (e) => {
         setColor(e.target.value);
@@ -86,18 +88,18 @@ export default function AddAccount({ open, setOpen, onSubmit }) {
 
     let createAccount = async () => {
         setLoading(true);
-        let data = {"name": name, "balance": Number(balance), "currency": selectedCurrency, "color": color};
-
-        let response = await api.post('/accounts/create', {...data});
-
-        let status = await response.status
-
-        if (status === 201) {
+        try {
+            let data = {"name": name, "balance": Number(balance), "currency": selectedCurrency, "color": color};
+            let response = await api.post('/accounts/create', {...data});
             onSubmit();
+            handleClose();
+        } catch (error) {
+            console.log(error)
+            setError(error.response.data.detail)
+        } finally {
+            setLoading(false);
         }
-        handleClose();
-        setLoading(false);
-
+        
     }
 
     useEffect(() => {
@@ -155,6 +157,7 @@ export default function AddAccount({ open, setOpen, onSubmit }) {
                                         </Select>
                                     </FormControl>
                                 </Stack>
+                                {error && (<Alert severity="error" sx={{mt: "5%"}} onClose={() => setError(null)}>{error}</Alert>)}        
                         </Stack>
                     </DialogContent>
                 </Stack>

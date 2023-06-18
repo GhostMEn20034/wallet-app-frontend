@@ -15,6 +15,7 @@ export const AuthProvider = ({children}) => {
     let [loading, setLoading] = useState(true);
     let [error, setError] = useState(null);
 
+    
     const navigate = useNavigate()
 
 

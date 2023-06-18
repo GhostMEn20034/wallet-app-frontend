@@ -10,6 +10,7 @@ import ConfirmOTP from './components/ConfirmResetCode';
 import RecordHistory from './components/RecordsHistory';
 import AcccountList from './components/Accounts';
 import AccountDetail from './components/AccountDetail';
+import Dashboard from './components/Dashboard';
 
 function App() {
   return( 
@@ -20,6 +21,11 @@ function App() {
           <Route path='/login' element={
           <SignIn />
           } />
+          <Route path='/dashboard' element={
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          }/>
           <Route path='/profile' element={
               <PrivateRoute>
               <UserProfile />
