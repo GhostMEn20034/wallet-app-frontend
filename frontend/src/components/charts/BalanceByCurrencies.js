@@ -3,15 +3,15 @@ import CanvasJSReact from '@canvasjs/react-charts';
 let CanvasJS = CanvasJSReact.CanvasJS;
 let CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
-class CashFlow extends Component {
+class BalanceByCurrencies extends Component {
 	render() {
 		const options = {
-			backgroundColor: "#f5fffe",
-            height: 250,
+            backgroundColor: "#f5fffe",
+            height: 300,
 			animationEnabled: true,
 			theme: "light2",
 			axisY: {
-				title: "Amount",
+				title: "Balance",
 				includeZero: true,
 				labelFormatter: this.addSymbols,
                 fontFamily: "Arial"
@@ -26,8 +26,9 @@ class CashFlow extends Component {
                 
                 toolTipContent: "{y} {currency}",
 				dataPoints: [
-					{ y:  this.props.expense, label: "Expense", color: "red", currency: this.props.currency },
-                    { y:  this.props.income, label: "Income", color: "green", currency: this.props.currency },
+					...this.props.data.map((item) => (
+                        {"y": item.balance_by_currency, "label": item._id, "currency": item._id}
+                    ))
 				]
 			}]
 		}
@@ -39,4 +40,4 @@ class CashFlow extends Component {
     }
 }    
 
-export default CashFlow;
+export default BalanceByCurrencies;

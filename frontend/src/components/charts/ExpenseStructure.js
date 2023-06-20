@@ -7,6 +7,7 @@ var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 class ExpenseStructure extends Component {
 	render() {
 		const options = {
+			backgroundColor: "#f5fffe",
             height: 300,
 			animationEnabled: true,
 			subtitles: [{

@@ -20,7 +20,7 @@ import DateRangePicker from './DateFilter';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import DenseAppBar from './AppBar';
 
-function RecordAmount({ recordType, amount, currency }) {
+export function RecordAmount({ recordType, amount, currency }) {
   const recordStyles = {
     "Expense": { color: "red", sign: "-" },
     "Income": { color: "green", sign: "" },
@@ -310,7 +310,7 @@ export default function RecordHistory() {
           <Stack sx={{ mr: "1.5%" }}>
             <Stack direction="row">
               <Stack sx={{ width: "20%", ml: "30%" }}>
-                <DateRangePicker setFilters={setFilters} />
+                <DateRangePicker setFilters={setFilters} defaultShortcut={3}/>
               </Stack>
               <Button variant='contained' size='small' onClick={() => deleteSelected()}
                 sx={{ backgroundColor: "red", width: "20%", ":hover": { bgcolor: "#db0804", color: "white" }, ml: "30%" }}

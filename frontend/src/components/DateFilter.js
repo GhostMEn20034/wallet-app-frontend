@@ -45,10 +45,10 @@ const shortcutsItems = [
 ];
 
   
-  export default function DateRangePicker({setFilters}) {
-    const [startDate, setStartDate] = useState(dayjs().subtract(30, "day"));
-    const [endDate, setEndDate] = useState(dayjs());
-    const [radioValue, setRadioValue] = useState(3); // index of Last 30 days
+  export default function DateRangePicker({setFilters, defaultShortcut}) {
+    const [startDate, setStartDate] = useState(shortcutsItems[defaultShortcut].startDate);
+    const [endDate, setEndDate] = useState(shortcutsItems[defaultShortcut].endDate);
+    const [radioValue, setRadioValue] = useState(defaultShortcut); // index of Last 30 days
     const [dialogOpen, setDialogOpen] = useState(false);
 
     
@@ -98,7 +98,7 @@ const shortcutsItems = [
 
     return (
       <Stack>
-      <Button variant="contained" onClick={handleOpen} size='small' sx={{backgroundColor: "#30b864", ":hover": {bgcolor: "#289953", color: "white"}}}>
+      <Button variant="contained" onClick={handleOpen} size='small'>
         {startDate && endDate && radioValue === 0 ? `${startDate.format("MM/DD/YYYY")} - ${endDate.format("MM/DD/YYYY")}` : shortcutsItems[radioValue].label}
       </Button>
       <Dialog open={dialogOpen} onClose={handleClose} sx={{width: "100%"}}>
