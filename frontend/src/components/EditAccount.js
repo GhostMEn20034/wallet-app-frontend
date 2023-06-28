@@ -79,7 +79,7 @@ export default function EditAccount({ opened, setOpened, data, onSubmit }) {
     };
 
     let isFormValid = () => {
-        return color.trim() && name.trim() && balance;
+        return color.trim() && name.trim() && balance.toString().trim();
     }
 
     let handleSubmit = async () => {

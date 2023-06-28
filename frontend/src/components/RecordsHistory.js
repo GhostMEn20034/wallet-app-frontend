@@ -217,7 +217,7 @@ export default function RecordHistory() {
 
   let combineArrays = (ids, names) => {
     return ids.map((id, index) => {
-      return { id: id, name: names[index] };
+      return { _id: id, name: names[index] };
     });
   }
 

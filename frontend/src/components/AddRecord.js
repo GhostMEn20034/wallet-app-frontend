@@ -212,8 +212,8 @@ export default function FormDialog({ opened, onClose, onSubmit, accounts, catego
                         hidden
                       >
                         {accounts.map((account) => (
-                          <MenuItem key={account.id} value={account.id}>
-                            {account.name}
+                          <MenuItem key={account._id} value={account._id}>
+                            {account.name} ({account.balance} {account.currency})
                           </MenuItem>
                         ))}
                       </Select>
@@ -232,10 +232,10 @@ export default function FormDialog({ opened, onClose, onSubmit, accounts, catego
                           hidden
                         >
                           {accounts
-                            .filter((account) => account.id !== from) // filter out the selected account from the first form
+                            .filter((account) => account._id !== from) // filter out the selected account from the first form
                             .map((account) => (
-                              <MenuItem key={account.id} value={account.id}>
-                                {account.name}
+                              <MenuItem key={account._id} value={account._id}>
+                                {account.name} ({account.balance} {account.currency})
                               </MenuItem>
                             ))}
                         </Select>

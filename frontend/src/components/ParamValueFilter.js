@@ -41,6 +41,8 @@ export default function ParamValueFilter ({filterNameVisible,filterNameInner ,ob
       }, [checked, checkedHasChanged]);  
     
     
+    console.log(objects)
+
     const isEmpty = () => {
         // Return true if the checked array is empty, false otherwise
         return checked.length === 0;
@@ -85,7 +87,7 @@ export default function ParamValueFilter ({filterNameVisible,filterNameInner ,ob
                 </ListItem>
                 {objects.map((obj) => (
                     <ListItem sx={{ marginLeft: "5%", padding: 0 }}>
-                    <Checkbox checked={checked.includes(obj.id)} onChange={handleChange(obj.id)} />
+                    <Checkbox checked={checked.includes(obj._id)} onChange={handleChange(obj._id)} />
                     <ListItemText primary={obj.name} primaryTypographyProps={{fontSize: '15px'}} />
                     </ListItem>
                 ))}
